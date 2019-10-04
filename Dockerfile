@@ -11,8 +11,8 @@ RUN apt-get -y install cron python3 rsync mysql-client mongodb-clients
 COPY backup.sh /usr/local/sbin/backup.sh
 RUN chmod +x /usr/local/sbin/backup.sh
 
-COPY printsizediff.py /usr/local/sbin/printsizediff.py
-RUN chmod +x /usr/local/sbin/printsizediff.py
+COPY printsizediff.py /usr/local/bin/printsizediff.py
+RUN chmod +x /usr/local/bin/printsizediff.py
 
 # Copy hello-cron file to the cron.d directory
 #COPY hello-cron /etc/cron.d/hello-cron
