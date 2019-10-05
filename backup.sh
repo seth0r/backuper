@@ -53,7 +53,7 @@ daybackup() {
 
     for d in $sourcedir/*; do
         name=`basename $d`
-        opts="-avxWH --safe-links --delete "
+        opts="-avxWH --safe-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
             cat "$configdir/$name.options" | while read line; do
             opts="$opts $line"
