@@ -62,7 +62,7 @@ daybackup() {
         fi
         mkdir -p "$backupdir/local/$bname/$name"
         echo "Synchronisiere lokal $name..."
-        echo "nice -n 18 rsync $opts \"$d/\" \"$backupdir/local/$bname/$name/\""
+        nice -n 18 rsync $opts "$d/" "$backupdir/local/$bname/$name/"
     done
 
     rm -f $backupdir/local/last
