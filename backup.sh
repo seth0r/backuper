@@ -58,7 +58,7 @@ daybackup() {
             opts="$opts `cat \"$configdir/$name.options\" | tr '\n' ' '`"
         fi
         if [ -f "$configdir/$name.exclude" ] ; then
-            opts="$opts --exclude-from='$configdir/$name.exclude' --delete-excluded"
+            opts="$opts --exclude-from=$configdir/$name.exclude --delete-excluded"
         fi
         mkdir -p "$backupdir/local/$bname/$name"
         echo "Synchronisiere lokal $name..."
