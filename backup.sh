@@ -55,9 +55,7 @@ daybackup() {
         name=`basename $d`
         opts="-avxWH --safe-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
-            cat "$configdir/$name.options" | while read line; do
-            opts="$opts $line"
-            done
+            opts="$opts `cat \"$configdir/$name.options\" | tr '\n' ' '`"
         fi
         if [ -f "$configdir/$name.exclude" ] ; then
             opts="$opts --exclude-from='$configdir/$name.exclude' --delete-excluded"
