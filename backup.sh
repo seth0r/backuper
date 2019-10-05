@@ -6,7 +6,9 @@ export sourcedir=/tobackup
 
 datecmd="date +%u"
 
-. $configdir/backup.conf
+if [ -e $configdir/backup.conf ]; then
+    source $configdir/backup.conf
+fi
 
 mysqlbackup() {
     BACKUP_DIR="$backupdir/local/$weekday/mysql"
