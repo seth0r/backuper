@@ -181,20 +181,17 @@ sshbackup() {
     echo "######################################################"
 }
 
-if [ -d "$backupdir/local" ]; then
-    if [ "$1" = "day" ]; then
-        echo "Starte tägliches Backup..."
-        daybackup
-    fi
-    if [ "$1" = "week" ]; then
-        echo "Starte Wöchentliches Backup..."
-        daybackup
-        sshbackup
-    fi
-    if [ "$1" = "ssh" ]; then
-        sshbackup
-    fi
-else
-    echo "$backupdir not mounted."
+_mount
+
+if [ "$1" = "day" ]; then
+    echo "Starte tägliches Backup..."
+    daybackup
 fi
-wait
+if [ "$1" = "week" ]; then
+    echo "Starte Wöchentliches Backup..."
+    daybackup
+    sshbackup
+fi
+if [ "$1" = "ssh" ]; then
+    sshbackup
+fi
