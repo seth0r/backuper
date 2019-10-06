@@ -22,6 +22,7 @@ mkdir -p "$backupdir/rsync"
 _mount() {
     encfs_file=".encfs6.xml"
     if [ "$ENCFS_MODE" == "off" ]; then
+        echo "Mounting bind..."
         mount --bind "$backupdir/local" "$backupdir/rsync"
     elif [ "$ENCFS_MODE" == "on" ]; then
         if [ -f "$backupdir/rsync/$encfs_file" ]; then
@@ -42,13 +43,13 @@ _mount() {
     elif [ "$ENCFS_MODE" == "reverse" ]; then
         mkdir -p "$backupdir/rsync/encfs"
         if [ -f "$backupdir/local/$encfs_file" ]; then
-            echo "Reverse mounting encfs..."
+            echo "Mounting reverse encfs..."
             echo "$ENCFS_PASSWORD" | encfs -S --reverse "$backupdir/local" "$backupdir/rsync/encfs"
         elif [ -f "$backupdir/rsync/$encfs_file" ]; then
             echo "An encfs was found in $backupdir/rsync/."
             exit 3
         elif [ "$ENCFS_PASSWORD" != "" ]; then
-            echo "Creating and reverse mounting encfs..."
+            echo "Creating and mounting reverse encfs..."
             echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S --standard --reverse "$backupdir/local" "$backupdir/rsync/encfs"
             cp "$backupdir/local/$encfs_file" "$backupdir/rsync/$encfs_file"
         else
@@ -63,10 +64,13 @@ _mount() {
 
 _umount() {
     if [ "$ENCFS_MODE" == "off" ]; then
+        echo "Unmounting bind..."
         umount "$backupdir/rsync"
     elif [ "$ENCFS_MODE" == "on" ]; then
+        echo "Unmounting encfs..."
         umount "$backupdir/local"
     elif [ "$ENCFS_MODE" == "reverse" ]; then
+        echo "Unmounting reverse encfs..."
         umount "$backupdir/rsync/encfs"
     fi
 }
