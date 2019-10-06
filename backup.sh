@@ -97,6 +97,7 @@ mysqlbackup() {
 }
 
 mongodbbackup() {
+    false
 #    mongodump --out $backupdir/local/$weekday/mongodb.dump
 #    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
 #    rm -r $backupdir/local/$weekday/mongodb.dump
