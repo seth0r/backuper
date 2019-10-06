@@ -98,7 +98,7 @@ mongodbbackup() {
 #    rm -r $backupdir/local/$weekday/mongodb.dump
 }
 
-daybackup() {
+localbackup() {
 
     bname=`$DATECMD`
     tmp=`ls -l $backupdir/local/current | awk '{print $11}'`
@@ -190,17 +190,18 @@ sshbackup() {
     echo "######################################################"
 }
 
+
 _mount
 
-if [ "$1" = "day" ]; then
+if [ "$1" = "local" ]; then
     echo "Starte tägliches Backup..."
-    daybackup
+    localbackup
 fi
-if [ "$1" = "week" ]; then
+if [ "$1" = "local+remote" ]; then
     echo "Starte Wöchentliches Backup..."
-    daybackup
+    localbackup
     sshbackup
 fi
-if [ "$1" = "ssh" ]; then
+if [ "$1" = "remote" ]; then
     sshbackup
 fi
