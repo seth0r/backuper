@@ -190,10 +190,25 @@ sshbackup() {
     kill -9 $pid
 }
 
-    echo
-    echo "######################################################"
-    tail -n 100 $backupdir/sshbackup.log
-    echo "######################################################"
+sshconsole() {
+    if [ "$SSH_IDENTITY" == "" -o ! -f "$SSH_IDENTITY" ]; then
+        echo "SSH identity file not found."
+        exit 12
+    fi
+    if [ "$REMOTE_HOST" == "" ]; then
+        echo "No remote host set."
+        exit 13
+    fi
+    if [ "$REMOTE_LOGIN" == "" ]; then
+        echo "No remote login set."
+        exit 14
+    fi
+    if [ "$REMOTE_PORT" == "" ];  then
+        echo "remote port not set."
+        exit 15
+    fi
+
+    ssh -p $REMOTE_PORT -l $REMOTE_LOGIN -i $SSH_IDENTITY $REMOTE_HOST
 }
 
 
@@ -211,3 +226,7 @@ fi
 if [ "$1" = "remote" ]; then
     sshbackup
 fi
+if [ "$1" = "remoteconsole" ]; then
+    sshconsole
+fi
+_umount
