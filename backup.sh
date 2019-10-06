@@ -4,7 +4,10 @@ export configdir=/config
 export backupdir=/backup
 export sourcedir=/tobackup
 
-datecmd="date +%u"
+DATECMD="date +%u"
+BACKUP_MYSQL=0
+BACKUP_MONGODB=0
+ENCFS_MODE="off"
 
 if [ -e $configdir/backup.conf ]; then
     source $configdir/backup.conf
@@ -34,7 +37,7 @@ mysqlbackup() {
 daybackup() {
     mkdir -p "$backupdir/local"
 
-    bname=`$datecmd`
+    bname=`$DATECMD`
     tmp=`ls -l $backupdir/local/current | awk '{print $11}'`
     tmp=`basename $tmp`
     if [ "$tmp" != "$bname" ]; then
