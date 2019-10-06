@@ -92,6 +92,12 @@ mysqlbackup() {
 #        rm -r $backupdir/local/$weekday/mysql.dump
 }
 
+mongodbbackup() {
+#    mongodump --out $backupdir/local/$weekday/mongodb.dump
+#    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
+#    rm -r $backupdir/local/$weekday/mongodb.dump
+}
+
 daybackup() {
 
     bname=`$DATECMD`
