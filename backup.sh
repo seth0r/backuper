@@ -8,6 +8,9 @@ DATECMD="date +%u"
 BACKUP_MYSQL=0
 BACKUP_MONGODB=0
 ENCFS_MODE="off"
+REMOTE_PORT=22
+RSYNCD_CONFIG="/config/rsyncd.config"
+SSH_IDENTITY="/config/id_rsa"
 
 if [ -e $configdir/backup.conf ]; then
     source $configdir/backup.conf
