@@ -3,7 +3,7 @@ MAINTAINER me+docker@seth0r.net
 
 RUN apt-get update 
 RUN apt-get dist-upgrade -y
-RUN apt-get -y install cron python3 rsync mysql-client mongodb-clients
+RUN apt-get -y install cron python3 rsync encfs mysql-client mongodb-clients
 
 #RUN apt-get clean && \
 #    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
