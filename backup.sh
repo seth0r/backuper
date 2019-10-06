@@ -150,41 +150,45 @@ localbackup() {
 }
 
 sshbackup() {
-    mkdir -p "$backupdir/encfs"
+    date
+    
+    if [ "$RSYNCD_CONFIG" == "" -o ! -f "$RSYNCD_CONFIG" ]; then
+        echo "rsync config not found."
+        exit 11
+    fi
+    if [ "$SSH_IDENTITY" == "" -o ! -f "$SSH_IDENTITY" ]; then
+        echo "SSH identity file not found."
+        exit 12
+    fi
+    if [ "$REMOTE_HOST" == "" ]; then
+        echo "No remote host set."
+        exit 13
+    fi
+    if [ "$REMOTE_LOGIN" == "" ]; then
+        echo "No remote login set."
+        exit 14
+    fi
+    if [ "$REMOTE_PORT" == "" ];  then
+        echo "remote port not set."
+        exit 15
+    fi
+    if [ "$REMOTE_SOURCE" == "" ];  then
+        echo "remote source not set."
+        exit 16
+    fi
+    if [ "$REMOTE_TARGET" == "" ];  then
+        echo "remote target not set."
+        exit 17
+    fi
 
-    rm -f $backupdir/sshbackup.log
-    rm -f $backupdir/sshbackup.err
-
-    (
-
-        date
-        date >&2
-
-        if [ -f "$backupdir/temp/.encfs6.xml" ]; then
-            echo "Lade EncFS..."
-            cat "$backupdir/password" | encfs "$backupdir/temp" "$backupdir/encfs" -S 
-            if [ $? -eq 0 ]; then
-                nice -n 18 rsync -avWH --delete "$backupdir/local/current/" "$backupdir/encfs"
-
-                echo -e "\nSynchronisiere mit sanguin17.selfhost.eu..."
-#                echo -e "\nSynchronisiere mit helmchyn.no-ip.biz..."
-                rsync --daemon --no-detach --config=/data/scripts/rsyncd.conf &
-                pid=$!
-                ssh -p 58072 sven@sanguin17.selfhost.eu rsync -avzH --delete rsync://seth0r.net:60077/backup/ ./backup/
-#                ssh seth0r@helmchyn.no-ip.biz rsync -azH --delete rsync://seth0r.net:60077/backup/ ./backup/
-                kill $pid
-                sleep 5
-                kill -9 $pid
-                echo
-                rm -rf "$backupdir/encfs/"*
-                sleep .1
-                umount "$backupdir/encfs"
-            fi
-        else
-            echo "Kein EncFS gefunden!"
-        fi
-
-    ) >>$backupdir/sshbackup.log 2>>$backupdir/sshbackup.err
+    echo -e "\nSynchronisiere mit $REMOTE_HOST..."
+    rsync --daemon --no-detach --config=$RSYNCD_CONFIG &
+    pid=$!
+    ssh -p $REMOTE_PORT -l $REMOTE_LOGIN -i $SSH_IDENTITY $REMOTE_HOST rsync -avzH --delete $REMOTE_SOURCE $REMOTE_TARGET
+    kill $pid
+    sleep 5
+    kill -9 $pid
+}
 
     echo
     echo "######################################################"
