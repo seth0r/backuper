@@ -111,11 +111,13 @@ localbackup() {
 
     date
 
-#    mysqlbackup
+    if [ "$BACKUP_MYSQL" == "1" ]; then
+        mysqlbackup
+    fi
 
-#    mongodump --out $backupdir/local/$weekday/mongodb.dump
-#    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
-#    rm -r $backupdir/local/$weekday/mongodb.dump
+    if [ "$BACKUP_MONGODB" == "1" ]; then
+        mongodbbackup
+    fi
 
     for d in $sourcedir/*; do
         name=`basename $d`
