@@ -31,7 +31,7 @@ _mount() {
             mv "$backupdir/local" "$backupdir/temp"
             mkdir "$backupdir/local"
             echo "Creating and mounting encfs..."
-            echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S "$backupdir/rsync" "$backupdir/local"
+            echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S --standard "$backupdir/rsync" "$backupdir/local"
             echo "Migrating old backups..."
             rsync -av "$backupdir/temp/" "$backupdir/local/"
             rm -rf "$backupdir/temp"
@@ -49,7 +49,7 @@ _mount() {
             exit 3
         elif [ "$ENCFS_PASSWORD" != "" ]; then
             echo "Creating and reverse mounting encfs..."
-            echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S --reverse "$backupdir/local" "$backupdir/rsync/encfs"
+            echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S --standard --reverse "$backupdir/local" "$backupdir/rsync/encfs"
             cp "$backupdir/local/$encfs_file" "$backupdir/rsync/$encfs_file"
         else
             echo "Can not create encfs, no password set."
