@@ -17,10 +17,11 @@ mkdir -p "$backupdir/local"
 mkdir -p "$backupdir/rsync"
 
 _mount() {
+    encfs_file=".encfs6.xml"
     if [ "$ENCFS_MODE" == "off" ]; then
         mount --bind "$backupdir/local" "$backupdir/rsync"
     elif [ "$ENCFS_MODE" == "on" ]; then
-        if [ -f "$backupdir/rsync/.encfs6.xml" ]; then
+        if [ -f "$backupdir/rsync/$encfs_file" ]; then
             echo "Mounting encfs..."
             echo "$ENCFS_PASSWORD" | encfs -S "$backupdir/rsync" "$backupdir/local"
         elif [ "$ENCFS_PASSWORD" != "" ]; then
@@ -29,21 +30,24 @@ _mount() {
             echo "Creating and mounting encfs..."
             echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S "$backupdir/rsync" "$backupdir/local"
             echo "Migrating old backups..."
-            mv -v "$backupdir/temp/*" "$backupdir/local/"
-            rmdir "$backupdir/temp"
+            rsync -av "$backupdir/temp/" "$backupdir/local/"
+            rm -rf "$backupdir/temp"
         else
             echo "Can not create encfs, no password set."
             exit 2
         fi
     elif [ "$ENCFS_MODE" == "reverse" ]; then
         mkdir -p "$backupdir/rsync/encfs"
-        if [ -f "$backupdir/local/.encfs6.xml" ]; then
+        if [ -f "$backupdir/local/$encfs_file" ]; then
             echo "Reverse mounting encfs..."
             echo "$ENCFS_PASSWORD" | encfs -S --reverse "$backupdir/local" "$backupdir/rsync/encfs"
+        elif [ -f "$backupdir/rsync/$encfs_file" ]; then
+            echo "An encfs was found in $backupdir/rsync/."
+            exit 3
         elif [ "$ENCFS_PASSWORD" != "" ]; then
             echo "Creating and reverse mounting encfs..."
             echo -e "$ENCFS_PASSWORD\n$ENCFS_PASSWORD" | encfs -S --reverse "$backupdir/local" "$backupdir/rsync/encfs"
-            cp "$backupdir/local/.encfs6.xml" "$backupdir/rsync/.encfs6.xml"
+            cp "$backupdir/local/$encfs_file" "$backupdir/rsync/$encfs_file"
         else
             echo "Can not create encfs, no password set."
             exit 2
