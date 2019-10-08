@@ -19,10 +19,10 @@ mysqlbackup() {
     mycnf="$configdir/my.cnf"
     echo "[mysql]" > "$mycnf"
     echo "user=$MYSQL_USER" >> "$mycnf"
-    echo "password=$MYSQL_USER" >> "$mycnf"
+    echo "password=$MYSQL_PASSWORD" >> "$mycnf"
     echo "[mysqldump]" >> "$mycnf"
     echo "user=$MYSQL_USER" >> "$mycnf"
-    echo "password=$MYSQL_USER" >> "$mycnf"
+    echo "password=$MYSQL_PASSWORD" >> "$mycnf"
 
     MYSQL=/usr/bin/mysql
     MYSQLDUMP=/usr/bin/mysqldump
