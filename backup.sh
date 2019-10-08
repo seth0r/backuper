@@ -52,9 +52,9 @@ mongodbbackup() {
     rm -rf "$dir/*"
 
     if [ "$MONGODB_USER" == "" -o "" =$MONGODB_PASSWORD= "" ]; then
-        mongodump -o "$dir" -h "$MONGODB_HOST" --gzip
+        mongodump -o "$dir" -h "$MONGODB_HOST" --gzip --forceTableScan
     else
-        mongodump -o "$dir" -h "$MONGODB_HOST" -u "$MONGODB_USER" -p "$MONGODB_PASSWORD" --gzip
+        mongodump -o "$dir" -h "$MONGODB_HOST" -u "$MONGODB_USER" -p "$MONGODB_PASSWORD" --gzip --forceTableScan
     fi
 #    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
 #    rm -r $backupdir/local/$weekday/mongodb.dump
