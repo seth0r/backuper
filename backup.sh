@@ -30,6 +30,8 @@ mysqlbackup() {
     dir="$backupdir/mysql/$MYSQL_HOST"
     mkdir -p "$dir"
  
+    rm -rf "$dir/*"
+
     databases=`$MYSQL "--defaults-file=$mycnf" -h "$MYSQL_HOST" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
  
     for db in $databases; do
