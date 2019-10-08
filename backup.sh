@@ -41,8 +41,19 @@ mysqlbackup() {
 }
 
 mongodbbackup() {
-    false
-#    mongodump --out $backupdir/local/$weekday/mongodb.dump
+    if [ "$MONGODB_HOST" == "" ]; then
+        echo "MYSQL_HOST, MYSQL_USER and MYSQL_PASSWORD has to be set."
+        exit 2
+    fi
+    
+    dir="$backupdir/mongodb/$MONGODB_HOST"
+    mkdir -p "$dir"
+
+    if [ "$MONGODB_USER" == "" -o "" =$MONGODB_PASSWORD= "" ]; then
+        mongodump -o "$dir" -h "$MONGODB_HOST" --gzip
+    else
+        mongodump -o "$dir" -h "$MONGODB_HOST" -u "$MONGODB_USER" -p "$MONGODB_PASSWORD" --gzip
+    fi
 #    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
 #    rm -r $backupdir/local/$weekday/mongodb.dump
 }
