@@ -11,23 +11,30 @@ if [ -e $configdir/backup.conf ]; then
 fi
 
 mysqlbackup() {
-    BACKUP_DIR="$backupdir/local/$weekday/mysql"
-    MYSQL_USER="backup"
+    if [ "$MYSQL_HOST" == "" -o "$MYSQL_USER" == "" -o "$MYSQL_PASSWORD" == "" ]; then
+        echo "MYSQL_HOST, MYSQL_USER and MYSQL_PASSWORD has to be set."
+        exit 2
+    fi
+
+    mycnf="$configdir/my.cnf"
+    echo "[mysql]" > "$mycnf"
+    echo "user=$MYSQL_USER" >> "$mycnf"
+    echo "password=$MYSQL_USER" >> "$mycnf"
+    echo "[mysqldump]" >> "$mycnf"
+    echo "user=$MYSQL_USER" >> "$mycnf"
+    echo "password=$MYSQL_USER" >> "$mycnf"
+
     MYSQL=/usr/bin/mysql
-    MYSQL_PASSWORD="BAt8RqVQbFezqJqn"
     MYSQLDUMP=/usr/bin/mysqldump
  
-    mkdir -p "$BACKUP_DIR"
+    dir="$backupdir/mysql/$MYSQL_HOST"
+    mkdir -p "$dir"
  
-    databases=`$MYSQL --user=$MYSQL_USER -p$MYSQL_PASSWORD -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
+    databases=`$MYSQL -h "$MYSQL_HOST" "--defaults-file=$mycnf" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
  
     for db in $databases; do
-        $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --databases $db | gzip > "$BACKUP_DIR/$db.gz"
+        $MYSQLDUMP --force --opt -h "$MYSQL_HOST" "--defaults-file=$mycnf" --databases $db | gzip > "$dir/$db.gz"
     done
-
-#        mysqldump -u backup -p'BAt8RqVQbFezqJqn' -Acx > $backupdir/local/$weekday/mysql.dump
-#        tar -cjpf $backupdir/local/$weekday/mysql.dump.tar.bz2 $backupdir/local/$weekday/mysql.dump
-#        rm -r $backupdir/local/$weekday/mysql.dump
 }
 
 mongodbbackup() {
