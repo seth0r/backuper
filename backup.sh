@@ -51,6 +51,7 @@ mongodbbackup() {
 
     rm -rf "$dir/*"
 
+    echo "Creating MongoDB dump..."
     if [ "$MONGODB_USER" == "" -o "" =$MONGODB_PASSWORD= "" ]; then
         mongodump -o "$dir" -h "$MONGODB_HOST" --gzip --forceTableScan
     else
