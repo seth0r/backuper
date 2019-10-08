@@ -3,16 +3,13 @@ MAINTAINER me+docker@seth0r.net
 
 RUN apt-get update 
 RUN apt-get dist-upgrade -y
-RUN apt-get -y install cron python3 rsync encfs openssh-client mysql-client mongodb-clients vim
+RUN apt-get -y install cron rsync openssh-client mysql-client mongodb-clients vim
 
 #RUN apt-get clean && \
 #    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY backup.sh /usr/local/sbin/backup.sh
 RUN chmod +x /usr/local/sbin/backup.sh
-
-COPY printsizediff.py /usr/local/bin/printsizediff.py
-RUN chmod +x /usr/local/bin/printsizediff.py
 
 # Copy hello-cron file to the cron.d directory
 #COPY hello-cron /etc/cron.d/hello-cron
