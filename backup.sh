@@ -63,5 +63,5 @@ if [ "$BACKUP_MONGODB" == "1" ]; then
 fi
 
 if [ "$RSYNC_TARGET" != "" ]; then
-    localbackup
+    rsyncbackup
 fi
