@@ -30,10 +30,11 @@ mysqlbackup() {
     dir="$backupdir/mysql/$MYSQL_HOST"
     mkdir -p "$dir"
  
-    databases=`$MYSQL -h "$MYSQL_HOST" "--defaults-file=$mycnf" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
+    databases=`$MYSQL "--defaults-file=$mycnf" -h "$MYSQL_HOST" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
  
     for db in $databases; do
-        $MYSQLDUMP --force --opt -h "$MYSQL_HOST" "--defaults-file=$mycnf" --databases $db | gzip > "$dir/$db.gz"
+        echo "Creating dump of MySQL database $db..."
+        $MYSQLDUMP "--defaults-file=$mycnf" --force --opt -h "$MYSQL_HOST" --skip-lock-tables --databases $db | gzip > "$dir/$db.gz"
     done
 }
 
