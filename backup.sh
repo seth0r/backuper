@@ -56,8 +56,6 @@ mongodbbackup() {
     else
         mongodump -o "$dir" -h "$MONGODB_HOST" -u "$MONGODB_USER" -p "$MONGODB_PASSWORD" --gzip --forceTableScan
     fi
-#    tar -cjpf $backupdir/local/$weekday/mongodb.dump.tar.bz2 $backupdir/local/$weekday/mongodb.dump
-#    rm -r $backupdir/local/$weekday/mongodb.dump
 }
 
 rsyncbackup() {
