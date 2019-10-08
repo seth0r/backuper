@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export configdir=/config
-export sourcedir=/tobackup
+export backupdir=/tobackup
 
 BACKUP_MYSQL=0
 BACKUP_MONGODB=0
@@ -38,7 +38,7 @@ mongodbbackup() {
 }
 
 rsyncbackup() {
-    for d in $sourcedir/*; do
+    for d in $backupdir/*; do
         name=`basename $d`
         opts="-avxWH --safe-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
