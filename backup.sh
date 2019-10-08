@@ -49,6 +49,8 @@ mongodbbackup() {
     dir="$backupdir/mongodb/$MONGODB_HOST"
     mkdir -p "$dir"
 
+    rm -rf "$dir/*"
+
     if [ "$MONGODB_USER" == "" -o "" =$MONGODB_PASSWORD= "" ]; then
         mongodump -o "$dir" -h "$MONGODB_HOST" --gzip
     else
