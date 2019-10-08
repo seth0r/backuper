@@ -47,7 +47,7 @@ mongodbbackup() {
 rsyncbackup() {
     for d in $backupdir/*; do
         name=`basename $d`
-        opts="-avxWH --safe-links --delete"
+        opts="-avxWH --munge-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
             opts="$opts `cat \"$configdir/$name.options\" | tr '\n' ' '`"
         fi
