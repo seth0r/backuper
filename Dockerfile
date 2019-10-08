@@ -12,13 +12,13 @@ COPY backup.sh /usr/local/sbin/backup.sh
 RUN chmod +x /usr/local/sbin/backup.sh
 
 # Copy hello-cron file to the cron.d directory
-#COPY hello-cron /etc/cron.d/hello-cron
+COPY backup-cron /etc/cron.d/backup-cron
 
 # Give execution rights on the cron job
-#RUN chmod 0644 /etc/cron.d/hello-cron
+RUN chmod 0644 /etc/cron.d/backup-cron
 
 # Apply cron job
-#RUN crontab /etc/cron.d/hello-cron
+RUN crontab /etc/cron.d/backup-cron
 
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
