@@ -62,7 +62,7 @@ mongodbbackup() {
 rsyncbackup() {
     for d in $backupdir/*; do
         name=`basename $d`
-        opts="-avxWH --munge-links --delete $RSYNC_OPTS"
+        opts="-avxWH --munge-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
             opts="$opts `cat \"$configdir/$name.options\" | tr '\n' ' '`"
         fi
@@ -70,7 +70,7 @@ rsyncbackup() {
             opts="$opts --exclude-from=$configdir/$name.exclude --delete-excluded"
         fi
         echo "Synchronisiere $name..."
-        nice -n 18 rsync $opts "$d/" "$RSYNC_TARGET/$name/"
+        nice -n 18 rsync $opts $RSYNC_OPTS "$d/" "$RSYNC_TARGET/$name/"
     done
 }
 
