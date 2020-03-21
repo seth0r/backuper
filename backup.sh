@@ -70,7 +70,7 @@ rsyncbackup() {
             opts="$opts --exclude-from=$configdir/$name.exclude --delete-excluded"
         fi
         echo "Synchronisiere $name..."
-        nice -n 18 rsync $opts $RSYNC_OPTS "$d/" "$RSYNC_TARGET/$name/"
+        nice -n 18 rsync $opts ${RSYNC_OPTS[@]} "$d/" "$RSYNC_TARGET/$name/"
     done
 }
 
