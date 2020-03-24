@@ -42,7 +42,7 @@ mysqlbackup() {
 
 mongodbbackup() {
     if [ "$MONGODB_HOST" == "" ]; then
-        echo "MYSQL_HOST, MYSQL_USER and MYSQL_PASSWORD has to be set."
+        echo "MONGODB_HOST has to be set."
         exit 2
     fi
     
