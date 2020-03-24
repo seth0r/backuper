@@ -5,6 +5,7 @@ export backupdir=/tobackup
 
 BACKUP_MYSQL=0
 BACKUP_MONGODB=0
+BACKUP_INFLUXDB=0
 
 if [ -e $configdir/backup.conf ]; then
     source $configdir/backup.conf
@@ -59,6 +60,26 @@ mongodbbackup() {
     fi
 }
 
+influxdbbackup() {
+    if [ "INFLUXDB_HOST" == "" -o "INFLUXDB_PORT" == "" ]; then
+        echo "INFLUXDB_HOST and INFLUXDB_PORT has to be set."
+        exit 2
+    fi
+    dir="$backupdir/influxdb/$INFLUXDB_HOST"
+    mkdir -p "$dir"
+
+    d=`date +%F`
+    if [ -d "$dir/$d" ]; then
+        rm -r "$dir/$d"
+    fi
+    l=`ls $dir | sort | tail -n1`
+    if [ "$l" == "" ]; then
+        influxd backup -host "$INFLUXDB_HOST:$INFLUXDB_PORT" -portable -end "${d}T00:00:00Z" $dir/$d
+    else
+        influxd backup -host "$INFLUXDB_HOST:$INFLUXDB_PORT" -portable -start "${l}T00:00:00Z" -end "${d}T00:00:00Z" $dir/$d
+    fi
+}
+
 rsyncbackup() {
     for d in $backupdir/*; do
         name=`basename $d`
@@ -82,6 +103,10 @@ fi
 
 if [ "$BACKUP_MONGODB" == "1" ]; then
     mongodbbackup
+fi
+
+if [ "$BACKUP_INFLUXDB" == "1" ]; then
+    influxdbbackup
 fi
 
 if [ "$RSYNC_TARGET" != "" ]; then
