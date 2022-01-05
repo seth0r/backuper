@@ -3,7 +3,7 @@ MAINTAINER me+docker@seth0r.net
 
 RUN apt-get update 
 RUN apt-get dist-upgrade -y
-RUN apt-get -y install cron rsync openssh-client mysql-client mongodb-clients vim gpg wget python3.7 gnupg2 curl
+RUN apt-get -y install cron rsync openssh-client mysql-client mongodb-clients vim gpg wget python3.7 gnupg2 curl docker.io
 
 RUN wget -qO- https://repos.influxdata.com/influxdb.key | apt-key add -
 RUN echo "deb https://repos.influxdata.com/debian buster stable" | tee /etc/apt/sources.list.d/influxdb.list

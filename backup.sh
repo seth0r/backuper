@@ -6,6 +6,7 @@ export backupdir=/tobackup
 BACKUP_MYSQL=0
 BACKUP_MONGODB=0
 BACKUP_INFLUXDB=0
+BACKUP_DOCKER=0
 
 if [ -e $configdir/backup.conf ]; then
     source $configdir/backup.conf
@@ -80,6 +81,18 @@ influxdbbackup() {
     fi
 }
 
+dockerbackup() {
+    dir="$backupdir/docker"
+    mkdir -p "$dir"
+
+    rm -rf "$dir/*"
+
+    for c in `docker container ls -a | sed 's/^.* //' | tail +2`; do
+        echo "Creating Docker backup of container $c..."
+        docker container inspect "$c" > "$dir/$c.json"
+    done
+}
+
 rsyncbackup() {
     for d in $backupdir/*; do
         name=`basename $d`
@@ -107,6 +120,10 @@ fi
 
 if [ "$BACKUP_INFLUXDB" == "1" ]; then
     influxdbbackup
+fi
+
+if [ "$BACKUP_DOCKER" == "1" ]; then
+    dockerbackup
 fi
 
 if [ "$RSYNC_TARGET" != "" ]; then
