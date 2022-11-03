@@ -93,9 +93,9 @@ dockerbackup() {
     done
 }
 
-rsyncbackup() {
-    for d in $backupdir/*; do
-        name=`basename $d`
+rsyncbackup_one() {
+    if [ "$1" != "" ] ; then
+        name=`basename $1`
         opts="-avxWH --munge-links --delete"
         if [ -f "$configdir/$name.options" ] ; then
             opts="$opts `cat \"$configdir/$name.options\" | tr '\n' ' '`"
@@ -104,8 +104,17 @@ rsyncbackup() {
             opts="$opts --exclude-from=$configdir/$name.exclude --delete-excluded"
         fi
         echo "Synchronisiere $name..."
-        nice -n 18 rsync $opts "${RSYNC_OPTS[@]}" "$d/" "$RSYNC_TARGET/$name/"
+        nice -n 18 rsync $opts "${RSYNC_OPTS[@]}" "$1/" "$RSYNC_TARGET/$name/"
+    fi
+}
+
+rsyncbackup() {
+    rm -f $backupdir/touched
+    for d in $backupdir/*; do
+        rsyncbackup_one $d
     done
+    touch $backupdir/touched
+    rsyncbackup_one $backupdir/touched
 }
 
 date
