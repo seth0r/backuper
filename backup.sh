@@ -7,7 +7,6 @@ BACKUP_MYSQL=0
 BACKUP_MONGODB=0
 BACKUP_INFLUXDB=0
 BACKUP_DOCKER=0
-BACKUP_TOUCH=0
 
 if [ -e $configdir/backup.conf ]; then
     source $configdir/backup.conf
@@ -111,7 +110,11 @@ rsyncbackup_one() {
 
 rsyncbackup() {
     for d in $backupdir/*; do
-        rsyncbackup_one $d
+        if [ "$d" != "touched" ] ; then
+            name=`basename $1`
+            rsyncbackup_one $d
+            touch $backupdir/touched/$name
+        fi
     done
 }
 
@@ -133,11 +136,7 @@ if [ "$BACKUP_DOCKER" == "1" ]; then
     dockerbackup
 fi
 
-rm -f $backupdir/touched
 if [ "$RSYNC_TARGET" != "" ]; then
     rsyncbackup
 fi
-if [ "$BACKUP_TOUCH" == "1" ]; then
-    touch $backupdir/touched
-    rsyncbackup_one $backupdir/touched
-fi
+rsyncbackup_one $backupdir/touched
