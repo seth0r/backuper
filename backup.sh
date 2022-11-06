@@ -110,8 +110,8 @@ rsyncbackup_one() {
 
 rsyncbackup() {
     for d in $backupdir/*; do
-        if [ "$d" != "touched" ] ; then
-            name=`basename $1`
+        name=`basename $d`
+        if [ "$name" != "touched" ] ; then
             rsyncbackup_one $d
             touch $backupdir/touched/$name
         fi
