@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER me+docker@seth0r.net
 
 RUN apt-get update 
