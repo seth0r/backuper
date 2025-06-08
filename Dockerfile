@@ -18,8 +18,8 @@ RUN echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive_compat.gpg] h
 RUN apt-get update 
 RUN apt-get install -y influxdb postgresql-client
 
-#RUN apt-get clean && \
-#    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY backup.sh /usr/local/sbin/backup.sh
 RUN chmod +x /usr/local/sbin/backup.sh
