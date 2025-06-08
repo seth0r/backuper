@@ -4,6 +4,7 @@ export configdir=/config
 export backupdir=/tobackup
 
 BACKUP_MYSQL=0
+BACKUP_POSTGRES=0
 BACKUP_MONGODB=0
 BACKUP_INFLUXDB=0
 BACKUP_DOCKER=0
@@ -41,6 +42,35 @@ mysqlbackup() {
         $MYSQLDUMP "--defaults-file=$mycnf" --force --opt -h "$MYSQL_HOST" --skip-lock-tables --databases $db | gzip > "$dir/$db.gz"
     done
 }
+
+postgresbackup() {
+    if [ "$POSTGRES_HOST" == "" -o "$POSTGRES_USER" == "" -o "$POSTGRES_PASSWORD" == "" ]; then
+        echo "POSTGRES_HOST, POSTGRES_USER and POSTGRES_PASSWORD has to be set."
+        exit 2
+    fi
+
+    PSQL=/usr/bin/psql
+    PGDUMP=/usr/bin/pg_dump
+
+    export PGHOST=$POSTGRES_HOST
+    export PGDATABASE=postgres
+    export PGUSER=$POSTGRES_USER
+    export PGPASSWORD=$POSTGRES_PASSWORD
+
+    dir="$backupdir/postgres/$POSTGRES_HOST"
+    mkdir -p "$dir"
+
+    rm -rf "$dir/*"
+
+    databases=$( $PSQL -qAt <<< "SELECT datname FROM pg_database WHERE datistemplate = false" )
+
+    for db in $databases; do
+        echo "Creating dump of Postgres database $db..."
+        $PGDUMP -C $db | gzip > "$dir/$db.gz"
+    done
+}
+
+
 
 mongodbbackup() {
     if [ "$MONGODB_HOST" == "" ]; then
@@ -122,6 +152,10 @@ date
 
 if [ "$BACKUP_MYSQL" == "1" ]; then
     mysqlbackup
+fi
+
+if [ "$BACKUP_POSTGRES" == "1" ]; then
+    postgresbackup
 fi
 
 if [ "$BACKUP_MONGODB" == "1" ]; then
