@@ -1,0 +1,16 @@
+version: "3.6"
+services:
+  backuper:
+    container_name: "backuper"
+    environment:
+      - "TZ=UTC"
+    image: "seth0r/backuper:latest"
+    restart: "unless-stopped"
+    volumes:
+      - "./config:/config"
+      - "./ssh:/root/.ssh"
+      - "./tobackup:/tobackup"
+      - "/docker:/tobackup/dockerdata:ro"
+      - "/etc:/tobackup/etc:ro"
+      - "/root:/tobackup/root:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
