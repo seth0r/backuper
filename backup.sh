@@ -66,7 +66,7 @@ postgresbackup() {
 
     for db in $databases; do
         echo "Creating dump of Postgres database $db..."
-        $PGDUMP -C $db | gzip > "$dir/$db.gz"
+        $PGDUMP -d $db -Fc -f "$dir/$db.pgdump"
     done
 }
 
